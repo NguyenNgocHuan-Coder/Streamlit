@@ -5,6 +5,14 @@ import numpy as np
 from underthesea import word_tokenize, pos_tag, sent_tokenize
 from scipy.sparse import csr_matrix, hstack
 
+# ========== Sidebar Menu ==========
+st.sidebar.title("📚 Menu")
+menu_choice = st.sidebar.radio("Chọn chức năng:", (
+    "📌 Business Objective",
+    "🏗️ Build Model",
+    "💬 Sentiment Analysis",
+    "🧩 Information Clustering"
+))
 # ========== Load mô hình và vectorizer từ .pkl ==========
 with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
@@ -98,18 +106,58 @@ def predict_sentiment(text_input, recommend_num):
     label = le.inverse_transform([y_pred])[0]
     return label
 
-# ========== Giao diện Streamlit ==========
-st.set_page_config(page_title="Sentiment Analysis App", layout="wide")
-st.title("📢 Ứng dụng phân tích cảm xúc review công ty")
+# # ========== Giao diện Streamlit ==========
+# st.set_page_config(page_title="Sentiment Analysis App", layout="wide")
+# st.title("📢 Ứng dụng phân tích cảm xúc review công ty")
 
-input_text = st.text_area("✍️ Nhập câu đánh giá của bạn:", height=150)
-recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=True)
-recommend_num = 1 if recommend_input else 0
+# input_text = st.text_area("✍️ Nhập câu đánh giá của bạn:", height=150)
+# recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=True)
+# recommend_num = 1 if recommend_input else 0
 
-if st.button("🚀 Dự đoán cảm xúc"):
-    if not input_text.strip():
-        st.warning("⛔ Vui lòng nhập nội dung review!")
-    else:
-        with st.spinner("🔍 Đang xử lý..."):
-            result = predict_sentiment(input_text, recommend_num)
-        st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
+# if st.button("🚀 Dự đoán cảm xúc"):
+#     if not input_text.strip():
+#         st.warning("⛔ Vui lòng nhập nội dung review!")
+#     else:
+#         with st.spinner("🔍 Đang xử lý..."):
+#             result = predict_sentiment(input_text, recommend_num)
+#         st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
+# ========== Các Trang Ứng Dụng ==========
+if menu_choice == "📌 Business Objective":
+    st.title("📌 Business Objective: Sentiment Analysis and Information Clustering")
+    st.markdown("""
+    #### Mục tiêu của đồ án:
+    
+    - **Sentiment Analysis**: Xây dựng mô hình phân loại cảm xúc từ các đánh giá của nhân viên/ứng viên về công ty trên ITviec (Tích cực / Trung tính / Tiêu cực). Giúp công ty nắm bắt được tâm lý người lao động.
+
+    - **Information Clustering**: Phân cụm các đánh giá để xác định đặc điểm nổi bật của từng nhóm công ty, từ đó đề xuất các cải tiến để giữ chân nhân viên và nâng cao trải nghiệm ứng viên.
+
+    #### Ứng dụng:
+    
+    - Hệ thống đánh giá nội bộ cho các công ty
+    - Công cụ gợi ý cải thiện môi trường làm việc
+    - Tự động phân tích hàng loạt đánh giá từ nền tảng tuyển dụng
+    """)
+
+elif menu_choice == "🏗️ Build Model":
+    st.title("🏗️ Build Model")
+    st.info("🔧 Chức năng này sẽ được cập nhật sau")
+
+elif menu_choice == "💬 Sentiment Analysis":
+    st.title("💬 Ứng dụng phân tích cảm xúc review công ty")
+
+    input_text = st.text_area("✍️ Nhập câu đánh giá của bạn:", height=150)
+    recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=True)
+    recommend_num = 1 if recommend_input else 0
+
+    if st.button("🚀 Dự đoán cảm xúc"):
+        if not input_text.strip():
+            st.warning("⛔ Vui lòng nhập nội dung review!")
+        else:
+            with st.spinner("🔍 Đang xử lý..."):
+                result = predict_sentiment(input_text, recommend_num)
+            st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
+
+elif menu_choice == "🧩 Information Clustering":
+    st.title("🧩 Information Clustering")
+    st.info("🛠️ Phân cụm đánh giá công ty sẽ được cập nhật sau")
+
