@@ -106,21 +106,7 @@ def predict_sentiment(text_input, recommend_num):
     label = le.inverse_transform([y_pred])[0]
     return label
 
-# # ========== Giao diện Streamlit ==========
-# st.set_page_config(page_title="Sentiment Analysis App", layout="wide")
-# st.title("📢 Ứng dụng phân tích cảm xúc review công ty")
 
-# input_text = st.text_area("✍️ Nhập câu đánh giá của bạn:", height=150)
-# recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=True)
-# recommend_num = 1 if recommend_input else 0
-
-# if st.button("🚀 Dự đoán cảm xúc"):
-#     if not input_text.strip():
-#         st.warning("⛔ Vui lòng nhập nội dung review!")
-#     else:
-#         with st.spinner("🔍 Đang xử lý..."):
-#             result = predict_sentiment(input_text, recommend_num)
-#         st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
 # ========== Các Trang Ứng Dụng ==========
 if menu_choice == "📌 Business Objective":
     st.title("📌 Business Objective: Sentiment Analysis and Information Clustering")
