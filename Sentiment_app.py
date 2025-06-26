@@ -6,16 +6,16 @@ from underthesea import word_tokenize, pos_tag, sent_tokenize
 from scipy.sparse import csr_matrix, hstack
 
 # ========== Load mô hình và vectorizer từ .pkl ==========
-with open("Sentiment_Models/vectorizer.pkl", "rb") as f:
+with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-with open("Sentiment_Models/scaler.pkl", "rb") as f:
+with open("scaler.pkl", "rb") as f:
     scaler = pickle.load(f)
 
-with open("Sentiment_Models/model_lr.pkl", "rb") as f:
+with open("model_lr.pkl", "rb") as f:
     model_lr = pickle.load(f)
 
-with open("Sentiment_Models/label_encoder.pkl", "rb") as f:
+with open("label_encoder.pkl", "rb") as f:
     le = pickle.load(f)
 
 # ========== Load các dictionary từ file txt ==========
@@ -28,14 +28,14 @@ def load_list_from_txt(path):
     with open(path, 'r', encoding='utf-8') as f:
         return [line.strip() for line in f if line.strip()]
 
-emoji_dict = load_dict_from_txt("Sentiment_Models/emojicon.txt")
-teen_dict = load_dict_from_txt("Sentiment_Models/teencode.txt")
-wrong_lst = load_list_from_txt("Sentiment_Models/wrong-word.txt")
-stopwords_lst = load_list_from_txt("Sentiment_Models/vietnamese-stopwords.txt")
-positive_words = load_list_from_txt("Sentiment_Models/positive_VN.txt")
-negative_words = load_list_from_txt("Sentiment_Models/negative_VN.txt")
-positive_emojis = load_list_from_txt("Sentiment_Models/positive_emoji.txt")
-negative_emojis = load_list_from_txt("Sentiment_Models/negative_emoji.txt")
+emoji_dict = load_dict_from_txt("emojicon.txt")
+teen_dict = load_dict_from_txt("teencode.txt")
+wrong_lst = load_list_from_txt("wrong-word.txt")
+stopwords_lst = load_list_from_txt("vietnamese-stopwords.txt")
+positive_words = load_list_from_txt("positive_VN.txt")
+negative_words = load_list_from_txt("negative_VN.txt")
+positive_emojis = load_list_from_txt("positive_emoji.txt")
+negative_emojis = load_list_from_txt("negative_emoji.txt")
 
 # ========== Tiền xử lý ==========
 def covert_unicode(txt):
