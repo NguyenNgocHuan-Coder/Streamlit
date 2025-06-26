@@ -126,8 +126,18 @@ if menu_choice == "📌 Business Objective":
 
 elif menu_choice == "🏗️ Build Model":
     st.title("🏗️ Build Model")
-    st.info("🔧 Chức năng này sẽ được cập nhật sau")
-
+    st.write("### Sentiment Analysis")
+    st.write("##### 1. Data EDA")
+    st.image("Sentiment_EDA.jpg")
+    st.image("Clustering_EDA.jpg")
+    st.write("##### 2. Visualize")
+    st.image("sentiment_distributed_data.ipg")
+    st.write("##### 3. Build model and Evaluation")
+    st.write("###### Chọn 3 model Logistic Regression , Random Forest , Decision Tree")
+    st.write("###### Đánh giá kết quả dựa trên Presicion , ReCall , F1-Score , Accuracy")
+    st.image("sentiment_evaluation.jpg")
+    st.write("###### Confusion Matrix")
+    st.image("Confusion Matrix.jpg")
 elif menu_choice == "💬 Sentiment Analysis":
     st.title("💬 Ứng dụng phân tích cảm xúc review công ty")
 
