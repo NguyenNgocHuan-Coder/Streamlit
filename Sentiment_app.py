@@ -130,17 +130,48 @@ elif menu_choice == "🏗️ Build Model":
     st.write("##### 1. Data EDA")
     st.image("Sentiment_EDA.JPG")
     st.image("Clustering_EDA.JPG")
-    st.write("##### 2. Visualize")
+    st.write("##### 2. Visualization")
     st.image("sentiment_distributed_data.JPG")
     st.write("##### 3. Build model and Evaluation")
-    st.write("###### Chọn 3 model Logistic Regression , Random Forest , Decision Tree")
-    st.write("###### Đánh giá kết quả dựa trên Presicion , ReCall , F1-Score , Accuracy")
+    st.write("###### - Huấn luyện mô hình phân loại Logistic Regression , Random Forest , Decision Tree")
+    st.write("###### - Đánh giá kết quả dựa trên Presicion , ReCall , F1-Score , Accuracy")
     st.image("sentiment_evaluation.JPG")
     st.write("###### Confusion Matrix")
     st.image("Confusion Matrix.JPG")
     st.markdown("Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>Logistic Regression</span> là tối ưu nhất.",
     unsafe_allow_html=True)
-
+    st.write("### Information Clustering")
+    st.write("##### 1. Data EDA")
+    st.image("Clustering_EDA.JPG")
+    st.write("##### 2. Visualization")
+    st.image("Cluster_wordcloud.JPG")
+    st.write("##### 3. Build model and Evaluation")
+    st.write("###### - Huấn luyện mô hình phân cụm với các thuật toán KMeans, AgglomerativeClustering, SpectralClustering, Birch")
+    st.write("###### - Đánh giá kết quả dựa trên Sihouette score")
+    st.image("k_evaluation.JPG")
+    st.write("###### Trực quan hoá Elbow theo Sihouette score")
+    st.image("ellbow.JPG")
+    st.write("###### Trực quan hoá Elbow theo Sihouette score")
+    st.image("Cluster_distributed.JPG")
+    st.markdown(" Kết luận : Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>KMeans</span> với k=4 là mô hình tối ưu nhất vì:
+                            - Silhouette Score ≈ 0.75 cao nhất với k=4, rất ổn định.
+                            - Các điểm còn lại giảm nhẹ nhưng vẫn khá cao → ổn định tốt.
+                            - Biểu đồ phân cụm (LDA + KMeans): Nhóm dữ liệu được chia rõ ràng, trực quan.
+                            - Ranh giới giữa các cụm rõ ràng, gần như không có điểm chồng lấn.
+                ",unsafe_allow_html=True)
+    st.write("##### 4. Interpreting and Visualizing Cluster Analysis Results")
+    st.write("###### ✅ Chủ đề #1:Bất cập trong đãi ngộ & điều kiện làm việc. Cụm này nhấn mạnh về các yếu tố về lương và phúc lợi , đặc  biệt có đề cập đến vấn đề bất cập là lương_chậm và công nghệ cũ.")
+    st.write("###### 🔑 Key words: chính_sách_làm_thêm_giờ, chế_độ_đãi_ngộ, chế_độ_phúc_lợi, giờ_giấc_thoải_mái, lương_chậm, lương_thưởng, sức_khoẻ, văn_phòng_đẹp, công_ty_lớn, đồng_nghiệp_thân_thiện,môi_trường_làm_việc_thân_thiện.")
+    st.image("wordcloud_0.JPG")
+    st.write("######  ✅ Chủ đề #2: Môi trường & văn hóa doanh nghiệp .Tập trung vào môi trường làm việc, văn hóa công ty, và cơ sở vật chất hỗ trợ nhân viên, đi kèm một số yếu tố về chính sách và lương")
+    st.write("###### 🔑 Key words: môi_trường_làm_việc_tốt, môi_trường_làm_việc_thoải_mái, văn_hoá_công_ty, môi_trường_làm_việc_năng_động, văn_hoá_công_ty, đồng_nghiệp_thân_thiện, công_ty_lớn, văn_phòng_đẹp ,bãi_đậu_xe_rộng_rãi, lương_thưởng, chính_sách_làm_thêm_giờ.")
+    st.image("wordcloud_1.JPG")
+    st.write("######  ✅ Chủ đề #3: Đãi ngộ & cơ hội phát triển . Gần giống cụm 0 nhưng nhấn mạnh thêm vào yếu tố phúc lợi, dự án lớn và mức lương tốt → thể hiện sự quan tâm đến giá trị công việc & đãi ngộ.")
+    st.write("###### 🔑 Key words: dự_án_lớn, lương_tốt, lương_ổn,môi_trường_làm_việc_thoải_mái, môi_trường_làm_việc_thân_thiện, chế_độ_phúc_lợi, đồng_nghiệp_thân_thiện, văn_phòng_rộng")
+    st.image("wordcloud_2.JPG")
+    st.write("######  ✅ Chủ đề #4: Trải nghiệm làm việc tích cực . Cụm này thể hiện rõ yếu tố trải nghiệm làm việc hàng ngày: linh hoạt, văn phòng đẹp, đồng nghiệp vui vẻ, văn hóa tích cực.")
+    st.write("###### 🔑 Key words: văn_phòng_đẹp, văn_phòng_rộng_rãi, phong_cảnh_đẹp, chính_sách_làm_thêm_giờ, lương_thưởng, đồng_nghiệp_thân_thiện, môi_trường_làm_việc_tốt, công_ty_lớn, bãi_đậu_xe_rộng_rãi, môi_trường_làm_việc_năng_động, môi_trường_làm_việc_thoải_mái, văn_hóa_công_ty.")
+    st.image("wordcloud_3.JPG")
 elif menu_choice == "💬 Sentiment Analysis":
     st.title("💬 Ứng dụng phân tích cảm xúc review công ty")
 
