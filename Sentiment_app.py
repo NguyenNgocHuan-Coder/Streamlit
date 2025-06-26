@@ -138,7 +138,7 @@ elif menu_choice == "🏗️ Build Model":
     st.image("sentiment_evaluation.JPG")
     st.write("###### Confusion Matrix")
     st.image("Confusion Matrix.JPG")
-    st.markdown("Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>Logistic Regression</span> là hợp lý nhất.",
+    st.markdown("Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>Logistic Regression</span> là tối ưu nhất.",
     unsafe_allow_html=True)
 
 elif menu_choice == "💬 Sentiment Analysis":
