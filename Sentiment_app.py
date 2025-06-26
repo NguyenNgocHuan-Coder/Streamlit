@@ -153,12 +153,14 @@ elif menu_choice == "🏗️ Build Model":
     st.image("ellbow.JPG")
     st.write("###### Trực quan hoá Elbow theo Sihouette score")
     st.image("Cluster_distributed.JPG")
-    st.markdown(" Kết luận : Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>KMeans</span> với k=4 là mô hình tối ưu nhất vì:
-                            - Silhouette Score ≈ 0.75 cao nhất với k=4, rất ổn định.
-                            - Các điểm còn lại giảm nhẹ nhưng vẫn khá cao → ổn định tốt.
-                            - Biểu đồ phân cụm (LDA + KMeans): Nhóm dữ liệu được chia rõ ràng, trực quan.
-                            - Ranh giới giữa các cụm rõ ràng, gần như không có điểm chồng lấn.
-                ",unsafe_allow_html=True)
+    st.markdown(" Kết luận : Chọn mô hình <span style='color: red; font-weight: bold; text-decoration: underline'>KMeans</span> với k=4 là mô hình tối ưu nhất vì:",unsafe_allow_html=True)
+    st.markdown(""" 
+    - Silhouette Score ≈ 0.75 cao nhất với k=4, rất ổn định.
+    - Các điểm còn lại giảm nhẹ nhưng vẫn khá cao → ổn định tốt.
+    - Biểu đồ phân cụm (LDA + KMeans): Nhóm dữ liệu được chia rõ ràng, trực quan.
+    - Ranh giới giữa các cụm rõ ràng, gần như không có điểm chồng lấn.
+    """)
+                
     st.write("##### 4. Interpreting and Visualizing Cluster Analysis Results")
     st.write("###### ✅ Chủ đề #1:Bất cập trong đãi ngộ & điều kiện làm việc. Cụm này nhấn mạnh về các yếu tố về lương và phúc lợi , đặc  biệt có đề cập đến vấn đề bất cập là lương_chậm và công nghệ cũ.")
     st.write("###### 🔑 Key words: chính_sách_làm_thêm_giờ, chế_độ_đãi_ngộ, chế_độ_phúc_lợi, giờ_giấc_thoải_mái, lương_chậm, lương_thưởng, sức_khoẻ, văn_phòng_đẹp, công_ty_lớn, đồng_nghiệp_thân_thiện,môi_trường_làm_việc_thân_thiện.")
