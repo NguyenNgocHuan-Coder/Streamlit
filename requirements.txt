@@ -6,3 +6,5 @@ regex
 numpy
 pandas
 openpyxl
+wordcloud
+matplotlib
