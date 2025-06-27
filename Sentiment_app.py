@@ -192,4 +192,15 @@ elif menu_choice == "💬 Sentiment Analysis":
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     st.info("🛠️ Phân cụm đánh giá công ty sẽ được cập nhật sau")
+# ========== Thông tin tác giả ==========
+st.sidebar.markdown(\"\"\"---\"\"\")  # Đường kẻ ngang
+st.sidebar.markdown(\"""
+**👨‍💻 Tác giả đồ án:**
+
+- Nguyễn Ngọc Huân  
+  📧 *nguyenngochuan992@gmail.com*
+
+- Nguyễn Thị Hoa Thắng  
+  📧 *thangnth0511@gmail.com*
+\"\"\")
 
