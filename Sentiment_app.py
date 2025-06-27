@@ -242,7 +242,7 @@ elif menu_choice == "🧩 Information Clustering":
             st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
             if cluster_text:
                 wordcloud = WordCloud(width=800, height=300, background_color='white').generate(cluster_text)
-                st.image(wordcloud.to_array(), caption=f"WordCloud cho cụm #{cluster_id}", , use_container_width=True)
+                st.image(wordcloud.to_array(), caption=f"WordCloud cho cụm #{cluster_id}", use_container_width=True)
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
 
