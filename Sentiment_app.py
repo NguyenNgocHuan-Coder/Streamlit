@@ -208,6 +208,58 @@ elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
     try:
+        #LOAD EMOJICON
+        file = open('emojicon.txt', 'r', encoding="utf8")
+        emoji_lst = file.read().split('\n')
+        emoji_dict1 = {}
+        for line in emoji_lst:
+            key, value = line.split('\t')
+            emoji_dict1[key] = str(value)
+        file.close()
+        #################
+        #LOAD TEENCODE
+        file = open('teencode.txt', 'r', encoding="utf8")
+        teen_lst = file.read().split('\n')
+        teen_dict1 = {}
+        for line in teen_lst:
+            key, value = line.split('\t')
+            teen_dict1[key] = str(value)
+        file.close()
+
+        ###############
+        #LOAD TRANSLATE ENGLISH -> VNMESE
+        file = open('english-vnmese.txt', 'r', encoding="utf8")
+        english_lst = file.read().split('\n')
+        english_dict1 = {}
+        for line in english_lst:
+            parts = line.strip().split('\t')
+            if len(parts) >= 2:
+                key = parts[0]
+                value = '\t'.join(parts[1:])  # nếu value có chứa dấu tab thì vẫn giữ nguyên
+            english_dict1[key] = value
+        file.close()
+
+        ################
+        #LOAD wrong words
+        file = open('wrong-word.txt', 'r', encoding="utf8")
+        wrong_lst1 = file.read().split('\n')
+        file.close()
+
+        #################
+        #LOAD STOPWORDS
+        file = open('vietnamese-stopwords.txt', 'r', encoding="utf8")
+        stopwords_lst1 = file.read().split('\n')
+        file.close()
+
+        #################
+        ##LOAD PHRASE_CORRECTION
+        file = open('phrase_corrections.txt', 'r', encoding="utf8")
+        correct_lst = file.read().split('\n')
+        correct_dict1 = {}
+        for line in correct_lst:
+            key, value = line.split(':')
+            correct_dict1[key] = str(value)
+        file.close()
         df = pd.read_excel("Reviews.xlsx", engine="openpyxl")
         df["Review"] = df["What I liked"].fillna("") + " " + df["Suggestions for improvement"].fillna("")
         df = df[["Company Name", "Review"]].dropna()
@@ -217,13 +269,13 @@ elif menu_choice == "🧩 Information Clustering":
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list_all)
 
         df = df[df["Company Name"] == selected_company]
-        def apply_phrase_correction(sentence, correct_dict):
-            for phrase, corrected in correct_dict.items():
+        def apply_phrase_correction(sentence, correct_dict1):
+            for phrase, corrected in correct_dict1.items():
                 # Dùng regex để thay thế cụm từ chính xác (có phân cách bằng dấu cách)
                 pattern = r'\b' + regex.escape(phrase) + r'\b'
                 sentence = regex.sub(pattern, corrected, sentence)
             return sentence        
-        def process_text(text, emoji_dict, teen_dict, english_dict, correct_dict, wrong_lst,stopwords_lst):
+        def process_text(text, emoji_dict1, teen_dict1, english_dict1, correct_dict1, wrong_lst1,stopwords_lst1):
             #Chuyển văn bản thành chữ thường
             document = text.lower()
             document = document.replace("’",'')
@@ -231,26 +283,26 @@ elif menu_choice == "🧩 Information Clustering":
             new_sentence = ''
             for sentence in sent_tokenize(document):
                 #CONVERT EMOJICON
-                sentence = ''.join(emoji_dict[word] + ' ' if word in emoji_dict else word for word in list(sentence))
+                sentence = ''.join(emoji_dict1[word] + ' ' if word in emoji_dict1 else word for word in list(sentence))
 
                 #CONVERT TEENCODE
-                sentence = ' '.join(teen_dict[word] if word in teen_dict else word for word in sentence.split())
+                sentence = ' '.join(teen_dict1[word] if word in teen_dict1 else word for word in sentence.split())
 
                 #CONVERT ENGLISH TO VIETNAMESE
-                sentence = ' '.join(english_dict[word] if word in english_dict else word for word in sentence.split())
+                sentence = ' '.join(english_dict1[word] if word in english_dict1 else word for word in sentence.split())
 
                 #DEL Punctuation & Numbers (chỉ giữ từ tiếng Việt, kể cả có dấu)
                 pattern = r'(?i)\b[a-záàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđ]+\b'
                 sentence = ' '.join(regex.findall(pattern, sentence))
 
                 #CONVERT PHRASE CORRECTION
-                sentence = apply_phrase_correction(sentence, correct_dict)
+                sentence = apply_phrase_correction(sentence, correct_dict1)
 
                 #DEL wrong words
-                # sentence = ' '.join(word for word in sentence.split() if word not in wrong_lst)
+                # sentence = ' '.join(word for word in sentence.split() if word not in wrong_lst1)
 
                 #DEL stop words
-                # sentence = ' '.join(word for word in sentence.split() if word not in stopwords_lst)
+                # sentence = ' '.join(word for word in sentence.split() if word not in stopwords_lst1)
 
                 new_sentence = new_sentence + sentence + '. '
 
@@ -261,7 +313,7 @@ elif menu_choice == "🧩 Information Clustering":
             return document
 
         # Tiền xử lý văn bản
-        df["Cleaned"] = df['Review'].apply(lambda text: process_text(text, emoji_dict, teen_dict, english_dict, correct_dict, wrong_lst,stopwords_lst))
+        df["Cleaned"] = df['Review'].apply(lambda text: process_text(text, emoji_dict1, teen_dict1, english_dict1, correct_dict1, wrong_lst1,stopwords_lst1))
         #Tách từ
         def work_tokenize(text):
             tokens = word_tokenize(text, format='text')
@@ -277,7 +329,7 @@ elif menu_choice == "🧩 Information Clustering":
             words = text.split()
 
             # Loại bỏ stopwords
-            filtered = [word for word in words if word not in stopwords_lst]
+            filtered = [word for word in words if word not in stopwords_lst1]
 
             # Loại bỏ từ/cụm từ trùng nhau liền kề
             deduped = []
@@ -321,7 +373,7 @@ elif menu_choice == "🧩 Information Clustering":
 
             return " ".join(merged_words)
         df["Cleaned"] = df["Cleaned"].apply(lambda text: postag_merge(text))
-        df["Cleaned"] = df["Cleaned"].apply(lambda text: apply_phrase_correction(text, correct_dict))    
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: apply_phrase_correction(text, correct_dict1))    
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_df=0.95, min_df=20)
         X_vec = vectorizer_cluster.fit_transform(df["Cleaned"])
