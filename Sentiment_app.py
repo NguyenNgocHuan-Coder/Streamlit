@@ -232,11 +232,11 @@ elif menu_choice == "🧩 Information Clustering":
             word_freq = pd.Series(word_counts, index=words).sort_values(ascending=False)
             return word_freq.index.tolist()
 
-        cluster_stats = df_clean['cluster'].value_counts().sort_index()
+        cluster_stats = df['cluster'].value_counts().sort_index()
         st.markdown(f"### 📊 Công ty `{selected_company}` có các cụm như sau:")
 
         for cluster_id in cluster_stats.index:
-            top_words = get_top_words_in_cluster(df_clean, cluster_id)
+            top_words = get_top_words_in_cluster(df, cluster_id)
             st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
 
     except Exception as e:
