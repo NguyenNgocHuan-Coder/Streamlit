@@ -212,15 +212,28 @@ elif menu_choice == "🧩 Information Clustering":
 
         company_list = sorted(df["Company Name"].dropna().unique())
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
+        df = df[df["Company Name"] == selected_company]
+        # Vector hóa văn bản
+        vectorizer_cluster = CountVectorizer(max_features=1000)
+        X_vec = vectorizer_cluster.fit_transform(df["clean_text"])
 
-        selected_row = df[df["Company Name"] == selected_company].iloc[0]
-        cluster_id = selected_row["cluster"]
-        keywords = selected_row["keywords"]
+        # Phân cụm với KMeans
+        kmeans = KMeans(n_clusters=4, random_state=42)
+        df["Cluster"] = kmeans.fit_predict(X_vec)
 
-        total_clusters = df["cluster"].nunique()
-        st.markdown(f"✅ **Công ty `{selected_company}` thuộc cụm số:** `{cluster_id}`")
-        st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** _{keywords}_")
-        st.markdown(f"📊 **Tổng số cụm:** {total_clusters}")
+        # Từ khóa đặc trưng theo cụm
+        keywords = vectorizer_cluster.get_feature_names_out()
+        order_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
+        cluster_keywords = [", ".join([keywords[i] for i in order_centroids[c][:10]]) for c in range(5)]
+        df["Top Keywords"] = df["Cluster"].map({i: kw for i, kw in enumerate(cluster_keywords)})
+
+        cluster_id = df["Cluster"].iloc[0]
+        top_keywords = df["Top Keywords"].iloc[0]
+
+        st.markdown(f"✅ **Công ty thuộc cụm số:** `{cluster_id}`")
+        st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** {top_keywords}")
+        st.markdown(f"📝 Số lượng đánh giá: {df.shape[0]}")
 
     except Exception as e:
-        st.error(f"Lỗi đọc file hoặc xử lý dữ liệu: {e}")
+        st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
+
