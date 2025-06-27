@@ -208,14 +208,14 @@ elif menu_choice == "💬 Sentiment Analysis":
                 result = predict_sentiment(input_text, recommend_num)
             st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
     st.markdown("---")
-    st.subheader("📥 Phân tích file đánh giá cảm xúc :")
-    uploaded_file = st.file_uploader("Tải lên file Excel (.xlsx) có cột 'review' và 'recommend'", type=["xlsx"])
+    st.subheader("📥 Phân tích file đánh giá hàng loạt")
+    uploaded_file = st.file_uploader("Tải lên file Excel (.xlsx) có cột 'Name', 'review' và 'recommend'", type=["xlsx"])
 
     if uploaded_file:
         try:
             df_file = pd.read_excel(uploaded_file, engine="openpyxl")
-            if 'review' not in df_file.columns or 'recommend' not in df_file.columns:
-                st.error("❌ File cần có đủ 2 cột 'review' và 'recommend'. Vui lòng kiểm tra lại.")
+            if not all(col in df_file.columns for col in ['review', 'recommend', 'Name']):
+                st.error("❌ File cần có đủ 3 cột 'Name', 'review' và 'recommend'. Vui lòng kiểm tra lại.")
             else:
                 with st.spinner("🔍 Đang xử lý dự đoán hàng loạt..."):
                     df_file['sentiment'] = df_file.apply(lambda row: predict_sentiment(row['review'], row['recommend']), axis=1)
@@ -230,9 +230,17 @@ elif menu_choice == "💬 Sentiment Analysis":
                     file_name="sentiment_result.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-        except Exception as e:
-            st.error(f"Lỗi xử lý file: {e}")
 
+                # Thống kê sentiment theo Name
+                summary = df_file.groupby(['Name', 'sentiment']).size().unstack(fill_value=0)
+                summary['Total'] = summary.sum(axis=1)
+                percent_summary = summary.div(summary['Total'], axis=0) * 100
+                percent_summary = percent_summary[['positive', 'neutral', 'negative']].fillna(0).round(1)
+
+                st.subheader("📊 Thống kê tỷ lệ cảm xúc theo Name")
+                st.dataframe(percent_summary)
+
+                st.bar_chart(percent_summary[['positive', 'neutral', 'negative']])
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
