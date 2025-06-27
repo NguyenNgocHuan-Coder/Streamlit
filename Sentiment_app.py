@@ -58,7 +58,8 @@ positive_words = load_list_from_txt("positive_VN.txt")
 negative_words = load_list_from_txt("negative_VN.txt")
 positive_emojis = load_list_from_txt("positive_emoji.txt")
 negative_emojis = load_list_from_txt("negative_emoji.txt")
-
+correct_dict = load_list_from_txt("phrase_corrections.txt")
+english_dict = load_list_from_txt("english-vnmese.txt")
 # ========== Tiền xử lý ==========
 def covert_unicode(txt):
     return txt.encode('utf-8').decode('utf-8')
@@ -216,24 +217,117 @@ elif menu_choice == "🧩 Information Clustering":
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list_all)
 
         df = df[df["Company Name"] == selected_company]
+        def process_text(text, emoji_dict, teen_dict, english_dict, correct_dict, wrong_lst,stopwords_lst):
+            #Chuyển văn bản thành chữ thường
+            document = text.lower()
+            document = document.replace("’",'')
+            document = regex.sub(r'\.+', ".", document)
+            new_sentence = ''
+            for sentence in sent_tokenize(document):
+                #CONVERT EMOJICON
+                sentence = ''.join(emoji_dict[word] + ' ' if word in emoji_dict else word for word in list(sentence))
+
+                #CONVERT TEENCODE
+                sentence = ' '.join(teen_dict[word] if word in teen_dict else word for word in sentence.split())
+
+                #CONVERT ENGLISH TO VIETNAMESE
+                sentence = ' '.join(english_dict[word] if word in english_dict else word for word in sentence.split())
+
+                #DEL Punctuation & Numbers (chỉ giữ từ tiếng Việt, kể cả có dấu)
+                pattern = r'(?i)\b[a-záàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđ]+\b'
+                sentence = ' '.join(regex.findall(pattern, sentence))
+
+                #CONVERT PHRASE CORRECTION
+                sentence = apply_phrase_correction(sentence, correct_dict)
+
+                #DEL wrong words
+                # sentence = ' '.join(word for word in sentence.split() if word not in wrong_lst)
+
+                #DEL stop words
+                # sentence = ' '.join(word for word in sentence.split() if word not in stopwords_lst)
+
+                new_sentence = new_sentence + sentence + '. '
+
+            document = new_sentence
+            ###### DEL excess blank space
+            document = regex.sub(r'\s+', ' ', document).strip()
+
+            return document
 
         # Tiền xử lý văn bản
-        df["Cleaned"] = df["Review"].apply(lambda x: remove_stopword(
-            process_postag_thesea(
-                process_text(
-                    normalize_repeated_characters(
-                        covert_unicode(x)
-                    )
-                )
-            )
-        ))
+        df["Cleaned"] = df['Review'].apply(lambda text: process_text(text, emoji_dict, teen_dict, english_dict, correct_dict, wrong_lst,stopwords_lst))
+        #Tách từ
+        def work_tokenize(text):
+            tokens = word_tokenize(text, format='text')
+            return tokens
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: work_tokenize(text)) 
+        #Nối từ phủ định với từ liền sau nó :
+        def merge_negation_words(text):
+            pattern = r"\b(không|không_có|chưa|chưa_có|khó|ít|ít_khi|hiếm|thiếu)\s+(\p{L}+)"
+            return regex.sub(pattern, r"\1_\2", text)
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: merge_negation_words(text))
+        def remove_stopwords_and_dedup(text):
+            # Tách từ
+            words = text.split()
 
+            # Loại bỏ stopwords
+            filtered = [word for word in words if word not in stopwords_lst]
+
+            # Loại bỏ từ/cụm từ trùng nhau liền kề
+            deduped = []
+            prev_word = None
+            for word in filtered:
+                if word != prev_word:
+                    deduped.append(word)
+                prev_word = word
+
+            return " ".join(deduped)   
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: remove_stopwords_and_dedup(text))
+        def postag_merge(text):
+            # Gán nhãn từ loại
+            tagged = pos_tag(text)
+
+            # Gộp: danh từ + (tính từ | động từ), hoặc động từ + tính từ
+            merged_words = []
+            skip = False
+            for i in range(len(tagged)):
+                if skip:
+                    skip = False
+                    continue
+
+                word, tag = tagged[i]
+
+                if i + 1 < len(tagged):
+                    next_word, next_tag = tagged[i + 1]
+
+                    # Nối danh từ với tính từ hoặc động từ
+                    if tag == 'N' and next_tag in {'A', 'V'}:
+                        merged_words.append(f"{word}_{next_word}")
+                        skip = True
+                    # Nối động từ với tính từ
+                    # elif tag == 'V' and next_tag == 'A':
+                    #     merged_words.append(f"{word}_{next_word}")
+                    #     skip = True
+                    # else:
+                    #     merged_words.append(word)
+                else:
+                    merged_words.append(word)
+
+            return " ".join(merged_words)
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: postag_merge(text))
+        def apply_phrase_correction(sentence, correct_dict):
+            for phrase, corrected in correct_dict.items():
+                # Dùng regex để thay thế cụm từ chính xác (có phân cách bằng dấu cách)
+                pattern = r'\b' + regex.escape(phrase) + r'\b'
+                sentence = regex.sub(pattern, corrected, sentence)
+            return sentence
+        df["Cleaned"] = df["Cleaned"].apply(lambda text: apply_phrase_correction(text, correct_dict))    
         # Vector hóa văn bản
-        vectorizer_cluster = CountVectorizer(max_features=1000)
+        vectorizer_cluster = CountVectorizer(max_df=0.95, min_df=20)
         X_vec = vectorizer_cluster.fit_transform(df["Cleaned"])
 
         # Phân cụm với KMeans
-        kmeans = KMeans(n_clusters=5, random_state=42)
+        kmeans = KMeans(n_clusters=4, random_state=42)
         df["Cluster"] = kmeans.fit_predict(X_vec)
 
         # Từ khóa đặc trưng theo cụm
