@@ -217,6 +217,12 @@ elif menu_choice == "🧩 Information Clustering":
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list_all)
 
         df = df[df["Company Name"] == selected_company]
+        def apply_phrase_correction(sentence, correct_dict):
+            for phrase, corrected in correct_dict.items():
+                # Dùng regex để thay thế cụm từ chính xác (có phân cách bằng dấu cách)
+                pattern = r'\b' + regex.escape(phrase) + r'\b'
+                sentence = regex.sub(pattern, corrected, sentence)
+            return sentence        
         def process_text(text, emoji_dict, teen_dict, english_dict, correct_dict, wrong_lst,stopwords_lst):
             #Chuyển văn bản thành chữ thường
             document = text.lower()
@@ -315,12 +321,6 @@ elif menu_choice == "🧩 Information Clustering":
 
             return " ".join(merged_words)
         df["Cleaned"] = df["Cleaned"].apply(lambda text: postag_merge(text))
-        def apply_phrase_correction(sentence, correct_dict):
-            for phrase, corrected in correct_dict.items():
-                # Dùng regex để thay thế cụm từ chính xác (có phân cách bằng dấu cách)
-                pattern = r'\b' + regex.escape(phrase) + r'\b'
-                sentence = regex.sub(pattern, corrected, sentence)
-            return sentence
         df["Cleaned"] = df["Cleaned"].apply(lambda text: apply_phrase_correction(text, correct_dict))    
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_df=0.95, min_df=20)
