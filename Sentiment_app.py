@@ -5,6 +5,9 @@ import numpy as np
 from underthesea import word_tokenize, pos_tag, sent_tokenize
 from scipy.sparse import csr_matrix, hstack
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 # ========== Sidebar Menu ==========
 st.sidebar.title("📚 Menu")
 menu_choice = st.sidebar.radio("Chọn chức năng:", (
@@ -204,26 +207,47 @@ elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
     try:
-        df_reviews = pd.read_excel("Reviews.xlsx", engine="openpyxl")
-        company_list = sorted(df_reviews["Company Name"].dropna().unique())
-        selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
+        df = pd.read_excel("Reviews.xlsx", engine="openpyxl")
+        df["Review"] = df["What I liked"].fillna("") + " " + df["Suggestions for improvement"].fillna("")
+        df = df[["Company Name", "Review"]].dropna()
 
-        df_selected = df_reviews[df_reviews["Company Name"] == selected_company]
+        # Select box chọn công ty
+        company_list_all = sorted(df["Company Name"].dropna().unique())
+        selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list_all)
 
-        if "Cluster" in df_selected.columns:
-            cluster_id = df_selected["Cluster"].iloc[0]
-            st.markdown(f"✅ **Công ty thuộc cụm số:** `{cluster_id}`")
+        df = df[df["Company Name"] == selected_company]
 
-            # Hiển thị từ khóa cụm (nếu đã được lưu sẵn trong cột 'Top Keywords')
-            if "Top Keywords" in df_selected.columns:
-                top_keywords = df_selected["Top Keywords"].iloc[0]
-                st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** {top_keywords}")
+        # Tiền xử lý văn bản
+        df["Cleaned"] = df["Review"].apply(lambda x: remove_stopword(
+            process_postag_thesea(
+                process_text(
+                    normalize_repeated_characters(
+                        covert_unicode(x)
+                    )
+                )
+            )
+        ))
 
-            st.markdown(f"📝 Số lượng đánh giá: {df_selected.shape[0]}")
-        else:
-            st.warning("❌ Dữ liệu chưa có thông tin phân cụm. Hãy cập nhật cột 'Cluster' trong file dữ liệu.")
+        # Vector hóa văn bản
+        vectorizer_cluster = CountVectorizer(max_features=1000)
+        X_vec = vectorizer_cluster.fit_transform(df["Cleaned"])
+
+        # Phân cụm với KMeans
+        kmeans = KMeans(n_clusters=5, random_state=42)
+        df["Cluster"] = kmeans.fit_predict(X_vec)
+
+        # Từ khóa đặc trưng theo cụm
+        keywords = vectorizer_cluster.get_feature_names_out()
+        order_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
+        cluster_keywords = [", ".join([keywords[i] for i in order_centroids[c][:10]]) for c in range(5)]
+        df["Top Keywords"] = df["Cluster"].map({i: kw for i, kw in enumerate(cluster_keywords)})
+
+        cluster_id = df["Cluster"].iloc[0]
+        top_keywords = df["Top Keywords"].iloc[0]
+
+        st.markdown(f"✅ **Công ty thuộc cụm số:** `{cluster_id}`")
+        st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** {top_keywords}")
+        st.markdown(f"📝 Số lượng đánh giá: {df.shape[0]}")
 
     except Exception as e:
-        st.error(f"Lỗi đọc dữ liệu: {e}")
-
-
+        st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
