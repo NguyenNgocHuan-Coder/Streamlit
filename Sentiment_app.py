@@ -208,7 +208,7 @@ elif menu_choice == "💬 Sentiment Analysis":
                 result = predict_sentiment(input_text, recommend_num)
             st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
     st.markdown("---")
-    st.subheader("📥 Phân tích file đánh giá hàng loạt")
+    st.subheader("📥 Phân tích file đánh giá cảm xúc :")
     uploaded_file = st.file_uploader("Tải lên file Excel (.xlsx) có cột 'review' và 'recommend'", type=["xlsx"])
 
     if uploaded_file:
