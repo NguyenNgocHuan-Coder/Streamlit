@@ -221,19 +221,25 @@ elif menu_choice == "🧩 Information Clustering":
         kmeans = KMeans(n_clusters=4, random_state=42)
         df["Cluster"] = kmeans.fit_predict(X_vec)
 
-        # Từ khóa đặc trưng theo cụm
-        keywords = vectorizer_cluster.get_feature_names_out()
-        order_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
-        cluster_keywords = [", ".join([keywords[i] for i in order_centroids[c][:10]]) for c in range(5)]
-        df["Top Keywords"] = df["Cluster"].map({i: kw for i, kw in enumerate(cluster_keywords)})
+        def get_top_words_in_cluster(dataframe, cluster_id, n_words=10):
+            cluster_text = " ".join(dataframe[dataframe['cluster'] == cluster_id]['clean_text'].dropna().astype(str).tolist())
+            if not cluster_text:
+                return []
+            vectorizer = CountVectorizer(max_features=n_words)
+            X = vectorizer.fit_transform([cluster_text])
+            word_counts = X.sum(axis=0).A1
+            words = vectorizer.get_feature_names_out()
+            word_freq = pd.Series(word_counts, index=words).sort_values(ascending=False)
+            return word_freq.index.tolist()
 
-        cluster_id = df["Cluster"].iloc[0]
-        top_keywords = df["Top Keywords"].iloc[0]
+        cluster_stats = company_reviews['cluster'].value_counts().sort_index()
+        st.markdown(f"### 📊 Công ty `{selected_company}` có các cụm như sau:")
 
-        st.markdown(f"✅ **Công ty thuộc cụm số:** `{cluster_id}`")
-        st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** {top_keywords}")
-        st.markdown(f"📝 Số lượng đánh giá: {df.shape[0]}")
+        for cluster_id in cluster_stats.index:
+            top_words = get_top_words_in_cluster(company_reviews, cluster_id)
+            st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
 
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
+
 
