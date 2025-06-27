@@ -202,6 +202,28 @@ elif menu_choice == "💬 Sentiment Analysis":
 
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
-    st.info("🛠️ Phân cụm đánh giá công ty sẽ được cập nhật sau")
+    
+    try:
+        df_reviews = pd.read_excel("Reviews.xlsx", engine="openpyxl")
+        company_list = sorted(df_reviews["Company Name"].dropna().unique())
+        selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
+
+        df_selected = df_reviews[df_reviews["Company Name"] == selected_company]
+
+        if "Cluster" in df_selected.columns:
+            cluster_id = df_selected["Cluster"].iloc[0]
+            st.markdown(f"✅ **Công ty thuộc cụm số:** `{cluster_id}`")
+
+            # Hiển thị từ khóa cụm (nếu đã được lưu sẵn trong cột 'Top Keywords')
+            if "Top Keywords" in df_selected.columns:
+                top_keywords = df_selected["Top Keywords"].iloc[0]
+                st.markdown(f"🔑 **Từ khóa đặc trưng của cụm:** {top_keywords}")
+
+            st.markdown(f"📝 Số lượng đánh giá: {df_selected.shape[0]}")
+        else:
+            st.warning("❌ Dữ liệu chưa có thông tin phân cụm. Hãy cập nhật cột 'Cluster' trong file dữ liệu.")
+
+    except Exception as e:
+        st.error(f"Lỗi đọc dữ liệu: {e}")
 
 
