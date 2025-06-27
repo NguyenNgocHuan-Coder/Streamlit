@@ -230,13 +230,13 @@ elif menu_choice == "🧩 Information Clustering":
             word_counts = X.sum(axis=0).A1
             words = vectorizer.get_feature_names_out()
             word_freq = pd.Series(word_counts, index=words).sort_values(ascending=False)
-            return word_freq.index.tolist()
+            return word_freq.index.tolist(), cluster_text
 
         cluster_stats = df['cluster'].value_counts().sort_index()
         st.markdown(f"### 📊 Công ty `{selected_company}` có các cụm như sau:")
 
         for cluster_id in cluster_stats.index:
-            top_words = get_top_words_in_cluster(df, cluster_id)
+            top_words, cluster_text = get_top_words_in_cluster(df, cluster_id)
             st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
             if cluster_text:
                 wordcloud = WordCloud(width=800, height=300, background_color='white').generate(cluster_text)
