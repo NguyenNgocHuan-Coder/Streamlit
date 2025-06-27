@@ -4,7 +4,7 @@ import re, regex
 import numpy as np
 from underthesea import word_tokenize, pos_tag, sent_tokenize
 from scipy.sparse import csr_matrix, hstack
-
+import pandas as pd
 # ========== Sidebar Menu ==========
 st.sidebar.title("📚 Menu")
 menu_choice = st.sidebar.radio("Chọn chức năng:", (
