@@ -10,6 +10,8 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import seaborn as sns
+import io
 # ========== Sidebar Menu ==========
 st.sidebar.title("📚 Menu")
 menu_choice = st.sidebar.radio("Chọn chức năng:", (
@@ -205,6 +207,31 @@ elif menu_choice == "💬 Sentiment Analysis":
             with st.spinner("🔍 Đang xử lý..."):
                 result = predict_sentiment(input_text, recommend_num)
             st.success(f"✅ Kết quả dự đoán: **{result.upper()}**")
+    st.markdown("---")
+    st.subheader("📥 Phân tích file đánh giá hàng loạt")
+    uploaded_file = st.file_uploader("Tải lên file Excel (.xlsx) có cột 'review' và 'recommend'", type=["xlsx"])
+
+    if uploaded_file:
+        try:
+            df_file = pd.read_excel(uploaded_file, engine="openpyxl")
+            if 'review' not in df_file.columns or 'recommend' not in df_file.columns:
+                st.error("❌ File cần có đủ 2 cột 'review' và 'recommend'. Vui lòng kiểm tra lại.")
+            else:
+                with st.spinner("🔍 Đang xử lý dự đoán hàng loạt..."):
+                    df_file['sentiment'] = df_file.apply(lambda row: predict_sentiment(row['review'], row['recommend']), axis=1)
+
+                st.success("✅ Phân tích hoàn tất! Bạn có thể tải file kết quả.")
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    df_file.to_excel(writer, index=False)
+                st.download_button(
+                    label="📥 Tải kết quả (.xlsx)",
+                    data=output.getvalue(),
+                    file_name="sentiment_result.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+        except Exception as e:
+            st.error(f"Lỗi xử lý file: {e}")
 
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
