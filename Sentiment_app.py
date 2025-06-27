@@ -8,6 +8,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 # ========== Sidebar Menu ==========
 st.sidebar.title("📚 Menu")
 menu_choice = st.sidebar.radio("Chọn chức năng:", (
