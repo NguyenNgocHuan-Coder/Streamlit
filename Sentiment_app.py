@@ -13,6 +13,17 @@ menu_choice = st.sidebar.radio("Chọn chức năng:", (
     "💬 Sentiment Analysis",
     "🧩 Information Clustering"
 ))
+# ========== Thông tin tác giả ==========
+st.sidebar.markdown("""---""")
+st.sidebar.markdown("""
+**🎓 Tác giả đồ án:**
+
+- Nguyễn Ngọc Huân  
+  ✉️ *nguyenngochuan992@gmail.com*
+
+- Nguyễn Thị Hoa Thắng  
+  ✉️ *thangnth0511@gmail.com*
+""")
 # ========== Load mô hình và vectorizer từ .pkl ==========
 with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
@@ -192,15 +203,5 @@ elif menu_choice == "💬 Sentiment Analysis":
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     st.info("🛠️ Phân cụm đánh giá công ty sẽ được cập nhật sau")
-# ========== Thông tin tác giả ==========
-st.sidebar.markdown(\"""
-**🎓 Tác giả đồ án:**
-
-- Nguyễn Ngọc Huân  
-  ✉️ *nguyenngochuan992@gmail.com*
-
-- Nguyễn Thị Hoa Thắng  
-  ✉️ *thangnth0511@gmail.com*
-\"\"\")
 
 
