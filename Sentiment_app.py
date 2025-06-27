@@ -241,6 +241,8 @@ elif menu_choice == "💬 Sentiment Analysis":
                 st.dataframe(percent_summary)
 
                 st.bar_chart(percent_summary[['positive', 'neutral', 'negative']])
+        except Exception as e:
+            st.error(f"Lỗi xử lý file: {e}")
 elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
