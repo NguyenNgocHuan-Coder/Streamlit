@@ -244,7 +244,7 @@ elif menu_choice == "💬 Sentiment Analysis":
                 )
                 ax.set_ylabel("Tỷ lệ (%)")
                 ax.set_title("Tỷ lệ cảm xúc theo từng người đánh giá")
-                ax.set_xticklabels(ax.get_xticklabels(),rotation=180)
+                ax.set_xticklabels(ax.get_xticklabels(),rotation=360)
                 st.pyplot(fig)
 
         except Exception as e:
