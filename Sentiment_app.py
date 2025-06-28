@@ -214,13 +214,13 @@ elif menu_choice == "💬 Sentiment Analysis":
     if uploaded_file:
         try:
             df_file = pd.read_excel(uploaded_file, engine="openpyxl")
-            if not all(col in df_file.columns for col in ['review', 'recommend', 'Name']):
+            if 'review' not in df_file.columns or 'recommend' not in df_file.columns or 'Name' not in df_file.columns:
                 st.error("❌ File cần có đủ 3 cột 'Name', 'review' và 'recommend'. Vui lòng kiểm tra lại.")
             else:
                 with st.spinner("🔍 Đang xử lý dự đoán hàng loạt..."):
                     df_file['sentiment'] = df_file.apply(lambda row: predict_sentiment(row['review'], row['recommend']), axis=1)
 
-                st.success("✅ Phân tích hoàn tất! Bạn có thể tải file kết quả.")
+                st.success("✅ Phân tích hoàn tất! Bạn có thể tải file kết quả và xem thống kê theo từng người đánh giá.")
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='openpyxl') as writer:
                     df_file.to_excel(writer, index=False)
@@ -231,16 +231,22 @@ elif menu_choice == "💬 Sentiment Analysis":
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
 
-                # Thống kê sentiment theo Name
-                summary = df_file.groupby(['Name', 'sentiment']).size().unstack(fill_value=0)
-                summary['Total'] = summary.sum(axis=1)
-                percent_summary = summary.div(summary['Total'], axis=0) * 100
-                percent_summary = percent_summary[['positive', 'neutral', 'negative']].fillna(0).round(1)
+                st.markdown("---")
+                st.subheader("📊 Thống kê cảm xúc theo người đánh giá (Name)")
+                df_counts = df_file.groupby(['Name', 'sentiment']).size().unstack(fill_value=0)
+                df_percent = df_counts.div(df_counts.sum(axis=1), axis=0) * 100
+                st.dataframe(df_percent.style.format("{:.1f}%"))
 
-                st.subheader("📊 Thống kê tỷ lệ cảm xúc theo Name")
-                st.dataframe(percent_summary)
+                fig, ax = plt.subplots(figsize=(10, 5))
+                df_percent[['positive', 'neutral', 'negative']].plot(
+                    kind='bar', stacked=True, ax=ax,
+                    color=['red', 'skyblue', 'blue']
+                )
+                ax.set_ylabel("Tỷ lệ (%)")
+                ax.set_title("Tỷ lệ cảm xúc theo từng người đánh giá")
+                ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+                st.pyplot(fig)
 
-                st.bar_chart(percent_summary[['positive', 'neutral', 'negative']])
         except Exception as e:
             st.error(f"Lỗi xử lý file: {e}")
 elif menu_choice == "🧩 Information Clustering":
