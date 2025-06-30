@@ -258,6 +258,31 @@ elif menu_choice == "🧩 Information Clustering":
         company_list = sorted(df["Company Name"].dropna().unique())
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
         df = df[df["Company Name"] == selected_company]
+        # Radar chart cho các thuộc tính đánh giá
+        st.markdown("---")
+        st.subheader("📈 Đánh giá tổng quan theo các khía cạnh")
+        radar_cols = [
+            "Salary & benefits",
+            "Training & learning",
+            "Management cares about me",
+            "Culture & fun",
+            "Office & workspace"
+        ]
+        if all(col in df.columns for col in radar_cols):
+            avg_scores = df[radar_cols].mean().values
+            angles = np.linspace(0, 2 * np.pi, len(radar_cols), endpoint=False).tolist()
+            avg_scores = np.concatenate((avg_scores, [avg_scores[0]]))
+            angles += angles[:1]
+
+            fig, ax = plt.subplots(figsize=(6,6), subplot_kw={'polar':True})
+            ax.plot(angles, avg_scores, 'o-', linewidth=2, label=selected_company)
+            ax.fill(angles, avg_scores, alpha=0.25)
+            ax.set_thetagrids(np.degrees(angles[:-1]), radar_cols)
+            ax.set_title(f"Biểu đồ Radar đánh giá - {selected_company}")
+            ax.grid(True)
+            st.pyplot(fig)
+        else:
+            st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")        
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_features=1000)
         X_vec = vectorizer_cluster.fit_transform(df["binh_luan"])
