@@ -267,7 +267,7 @@ elif menu_choice == "🧩 Information Clustering":
         df["Cluster"] = kmeans.fit_predict(X_vec)
 
         def get_top_words_in_cluster(dataframe, cluster_id, n_words=10):
-            cluster_text = " ".join(dataframe[dataframe['cluster'] == cluster_id]['clean_text'].dropna().astype(str).tolist())
+            cluster_text = " ".join(dataframe[dataframe['Cluster'] == cluster_id]['binh_luan'].dropna().astype(str).tolist())
             if not cluster_text:
                 return []
             vectorizer = CountVectorizer(max_features=n_words)
@@ -277,7 +277,7 @@ elif menu_choice == "🧩 Information Clustering":
             word_freq = pd.Series(word_counts, index=words).sort_values(ascending=False)
             return word_freq.index.tolist(), cluster_text
 
-        cluster_stats = df['cluster'].value_counts().sort_index()
+        cluster_stats = df['Cluster'].value_counts().sort_index()
         st.markdown(f"### 📊 Công ty `{selected_company}` có các cụm như sau:")
 
         for cluster_id in cluster_stats.index:
