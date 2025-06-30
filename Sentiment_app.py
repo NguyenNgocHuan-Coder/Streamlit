@@ -280,9 +280,15 @@ elif menu_choice == "🧩 Information Clustering":
             ax.set_thetagrids(np.degrees(angles[:-1]), radar_cols)
             ax.set_title(f"Biểu đồ Radar đánh giá - {selected_company}")
             ax.grid(True)
+
+            # Hiển thị điểm số trung bình trên biểu đồ
+            for i, angle in enumerate(angles[:-1]):
+                ax.text(angle, avg_scores[i] + 0.1, f"{avg_scores[i]:.2f}", ha='center', va='center', fontsize=9, color='black')
+
             st.pyplot(fig)
         else:
-            st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")        
+            st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")
+    
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_features=1000)
         X_vec = vectorizer_cluster.fit_transform(df["binh_luan"])
