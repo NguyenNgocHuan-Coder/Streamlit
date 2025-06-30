@@ -253,7 +253,7 @@ elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
     try:
-        df = pd.read_csv("clustered_reviews", encoding='utf-8')
+        df = pd.read_csv("clustered_reviews.csv", encoding='utf-8')
 
         company_list = sorted(df["Company Name"].dropna().unique())
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
