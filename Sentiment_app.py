@@ -323,11 +323,11 @@ elif menu_choice == "🧩 Information Clustering":
                 # Từ khóa nổi bật toàn công ty
         st.markdown("---")
         st.subheader("📌 Từ khóa nổi bật toàn công ty")
-        top_keywords = get_top_keywords_company(df, n_keywords=5)
-        st.write("Top 20 từ khóa phổ biến:")
+        top_keywords = get_top_keywords_company(df, n_keywords=10)
+        st.write("Top 10 từ khóa phổ biến:")
         st.markdown(", ".join(top_keywords.index))
 
-        wordcloud_all = WordCloud(width=1000, height=500, background_color='white').generate(" ".join(df['clean_text']))
+        wordcloud_all = WordCloud(width=1000, height=500, background_color='white',max_words=10).generate(" ".join(df['clean_text']))
         st.image(wordcloud_all.to_array(), caption=f"WordCloud toàn bộ review công ty {selected_company}", use_container_width=True)            
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
