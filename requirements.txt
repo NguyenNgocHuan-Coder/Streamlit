@@ -10,3 +10,4 @@ wordcloud
 matplotlib
 scipy
 seaborn
+plotly
