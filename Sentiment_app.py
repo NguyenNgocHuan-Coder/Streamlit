@@ -12,6 +12,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import seaborn as sns
 import io
+import plotly.graph_objects as go  # <-- thêm Plotly cho radar chart tương tác
 # ========== Sidebar Menu ==========
 st.sidebar.title("📚 Menu")
 menu_choice = st.sidebar.radio("Chọn chức năng:", (
