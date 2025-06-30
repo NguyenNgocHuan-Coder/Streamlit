@@ -275,19 +275,20 @@ elif menu_choice == "🧩 Information Clustering":
             angles += angles[:1]
 
             fig, ax = plt.subplots(figsize=(6,6), subplot_kw={'polar':True})
-            ax.plot(angles, avg_scores, 'o-', linewidth=2, label=selected_company)
-            ax.fill(angles, avg_scores, alpha=0.25)
+            colors = sns.color_palette("hsv", len(radar_cols))
+            ax.plot(angles, avg_scores, 'o-', linewidth=2, label=selected_company, color='blue')
+            ax.fill(angles, avg_scores, alpha=0.25, color='skyblue')
             ax.set_thetagrids(np.degrees(angles[:-1]), radar_cols)
             ax.set_title(f"Biểu đồ Radar đánh giá - {selected_company}")
             ax.grid(True)
 
-            # Hiển thị điểm số trung bình trên biểu đồ
             for i, angle in enumerate(angles[:-1]):
-                ax.text(angle, avg_scores[i] + 0.1, f"{avg_scores[i]:.2f}", ha='center', va='center', fontsize=9, color='black')
+                ax.text(angle, avg_scores[i] + 0.15, f"{avg_scores[i]:.2f}", ha='center', va='center', fontsize=10, color=colors[i])
 
             st.pyplot(fig)
         else:
             st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")
+
     
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_features=1000)
