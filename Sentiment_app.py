@@ -270,22 +270,25 @@ elif menu_choice == "🧩 Information Clustering":
         ]
         if all(col in df.columns for col in radar_cols):
             avg_scores = df[radar_cols].mean().values
-            angles = np.linspace(0, 2 * np.pi, len(radar_cols), endpoint=False).tolist()
-            avg_scores = np.concatenate((avg_scores, [avg_scores[0]]))
-            angles += angles[:1]
 
-            fig, ax = plt.subplots(figsize=(6,6), subplot_kw={'polar':True})
-            colors = sns.color_palette("hsv", len(radar_cols))
-            ax.plot(angles, avg_scores, 'o-', linewidth=2, label=selected_company, color='blue')
-            ax.fill(angles, avg_scores, alpha=0.25, color='skyblue')
-            ax.set_thetagrids(np.degrees(angles[:-1]), radar_cols)
-            ax.set_title(f"Biểu đồ Radar đánh giá - {selected_company}")
-            ax.grid(True)
+            fig = go.Figure()
+            fig.add_trace(go.Scatterpolar(
+                r=avg_scores,
+                theta=radar_cols,
+                fill='toself',
+                name=selected_company,
+                text=[f"{col}: {score:.2f}" for col, score in zip(radar_cols, avg_scores)],
+                hoverinfo="text",
+                marker=dict(color='royalblue')
+            ))
 
-            for i, angle in enumerate(angles[:-1]):
-                ax.text(angle, avg_scores[i] + 0.15, f"{avg_scores[i]:.2f}", ha='center', va='center', fontsize=10, color=colors[i])
+            fig.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=False,
+                title=f"Biểu đồ Radar đánh giá - {selected_company}"
+            )
 
-            st.pyplot(fig)
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")
 
