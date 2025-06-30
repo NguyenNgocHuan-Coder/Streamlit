@@ -266,7 +266,7 @@ elif menu_choice == "🧩 Information Clustering":
         kmeans = KMeans(n_clusters=4, random_state=42)
         df["Cluster"] = kmeans.fit_predict(X_vec)
 
-        def get_top_words_in_cluster(dataframe, cluster_id, n_words=10):
+        def get_top_words_in_cluster(dataframe, cluster_id, n_words=5):
             cluster_text = " ".join(dataframe[dataframe['cluster'] == cluster_id]['clean_text'].dropna().astype(str).tolist())
             if not cluster_text:
                 return []
