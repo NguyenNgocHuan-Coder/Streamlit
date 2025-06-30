@@ -279,7 +279,18 @@ elif menu_choice == "🧩 Information Clustering":
 
         cluster_stats = df['cluster'].value_counts().sort_index()
         st.markdown(f"### 📊 Công ty `{selected_company}` có các cụm như sau:")
-
+                # Hàm lấy từ khóa toàn công ty
+        def get_top_keywords_company(df, n_keywords=20):
+            all_text = " ".join(df['clean_text'].dropna().astype(str).tolist())
+            if not all_text:
+                return []
+            vectorizer = CountVectorizer()
+            X = vectorizer.fit_transform([all_text])
+            words = vectorizer.get_feature_names_out()
+            counts = X.toarray().flatten()
+            word_freq = pd.Series(counts, index=words).sort_values(ascending=False)
+            return word_freq.head(n_keywords)
+            
         for cluster_id in cluster_stats.index:
             top_words, cluster_text = get_top_words_in_cluster(df, cluster_id)
             st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
@@ -308,7 +319,16 @@ elif menu_choice == "🧩 Information Clustering":
             ax.set_title("📈 Từ khóa nổi bật nhất trong các cụm")
             ax.set_xlabel("Số cụm xuất hiện")
             ax.set_ylabel("Từ khóa")
-            st.pyplot(fig)        
+            st.pyplot(fig) 
+                # Từ khóa nổi bật toàn công ty
+        st.markdown("---")
+        st.subheader("📌 Từ khóa nổi bật toàn công ty")
+        top_keywords = get_top_keywords_company(df, n_keywords=20)
+        st.write("Top 20 từ khóa phổ biến:")
+        st.markdown(", ".join(top_keywords.index))
+
+        wordcloud_all = WordCloud(width=1000, height=500, background_color='white').generate(" ".join(df['clean_text']))
+        st.image(wordcloud_all.to_array(), caption=f"WordCloud toàn bộ review công ty {selected_company}", use_container_width=True)            
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
 
