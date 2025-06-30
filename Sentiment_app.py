@@ -197,7 +197,7 @@ elif menu_choice == "💬 Sentiment Analysis":
     st.title("💬 Ứng dụng phân tích cảm xúc review công ty")
 
     input_text = st.text_area("✍️ Nhập câu đánh giá của bạn:", height=150)
-    recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=True)
+    recommend_input = st.checkbox("✅ Bạn có recommend công ty này không?", value=False)
     recommend_num = 1 if recommend_input else 0
 
     if st.button("🚀 Dự đoán cảm xúc"):
