@@ -260,7 +260,7 @@ elif menu_choice == "🧩 Information Clustering":
         df = df[df["Company Name"] == selected_company]
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_features=1000)
-        X_vec = vectorizer_cluster.fit_transform(df["clean_text"])
+        X_vec = vectorizer_cluster.fit_transform(df["binh_luan"])
 
         # Phân cụm với KMeans
         kmeans = KMeans(n_clusters=4, random_state=42)
