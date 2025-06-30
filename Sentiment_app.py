@@ -266,7 +266,7 @@ elif menu_choice == "🧩 Information Clustering":
         kmeans = KMeans(n_clusters=4, random_state=42)
         df["Cluster"] = kmeans.fit_predict(X_vec)
 
-        def get_top_words_in_cluster(dataframe, cluster_id, n_words=5):
+        def get_top_words_in_cluster(dataframe, cluster_id, n_words=10):
             cluster_text = " ".join(dataframe[dataframe['cluster'] == cluster_id]['clean_text'].dropna().astype(str).tolist())
             if not cluster_text:
                 return []
@@ -284,7 +284,7 @@ elif menu_choice == "🧩 Information Clustering":
             top_words, cluster_text = get_top_words_in_cluster(df, cluster_id)
             st.markdown(f"- Cụm **#{cluster_id}**: 🔑 Từ khóa: _{', '.join(top_words)}_")
             if cluster_text:
-                wordcloud = WordCloud(width=1000, height=500, background_color='white').generate(cluster_text)
+                wordcloud = WordCloud(width=1000, height=500, background_color='white',max_words=10).generate(cluster_text)
                 st.image(wordcloud.to_array(), caption=f"WordCloud cho cụm #{cluster_id}", use_container_width=True)
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
