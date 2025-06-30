@@ -286,6 +286,29 @@ elif menu_choice == "🧩 Information Clustering":
             if cluster_text:
                 wordcloud = WordCloud(width=1000, height=500, background_color='white',max_words=10).generate(cluster_text)
                 st.image(wordcloud.to_array(), caption=f"WordCloud cho cụm #{cluster_id}", use_container_width=True)
+                            # === Thống kê tổng hợp các từ khóa từ tất cả cụm ===
+        all_keywords = []
+        for cluster_id in cluster_stats.index:
+            top_words, _ = get_top_words_in_cluster(df, cluster_id)
+            all_keywords.extend(top_words)
+
+        if all_keywords:
+            st.markdown("---")
+            st.markdown("### 🧠 Tổng hợp vấn đề nổi bật từ các cụm đánh giá")
+
+            keyword_counts = pd.Series(all_keywords).value_counts()
+            top_keywords = keyword_counts.head(10)
+
+            for idx, (kw, count) in enumerate(top_keywords.items(), 1):
+                st.markdown(f"{idx}. **{kw}** — xuất hiện trong **{count} cụm**")
+
+            # Optional: vẽ biểu đồ từ khóa nổi bật
+            fig, ax = plt.subplots()
+            sns.barplot(x=top_keywords.values, y=top_keywords.index, palette="viridis", ax=ax)
+            ax.set_title("📈 Từ khóa nổi bật nhất trong các cụm")
+            ax.set_xlabel("Số cụm xuất hiện")
+            ax.set_ylabel("Từ khóa")
+            st.pyplot(fig)        
     except Exception as e:
         st.error(f"Lỗi đọc hoặc xử lý dữ liệu: {e}")
 
