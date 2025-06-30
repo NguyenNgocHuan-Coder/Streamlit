@@ -253,7 +253,7 @@ elif menu_choice == "🧩 Information Clustering":
     st.title("🧩 Information Clustering")
     
     try:
-        df = pd.read_excel("df_clean.xlsx", engine="openpyxl")
+        df = pd.read_excel("Reviews_translated.xlsx", engine="openpyxl")
 
         company_list = sorted(df["Company Name"].dropna().unique())
         selected_company = st.selectbox("🔎 Chọn công ty để phân tích:", company_list)
