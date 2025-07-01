@@ -292,7 +292,29 @@ elif menu_choice == "🧩 Information Clustering":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("⚠️ Dữ liệu không đầy đủ để vẽ biểu đồ radar.")
+        # Bar chart & pie chart cho cột Sentiment
+        if "Sentiment" in df.columns:
+            st.markdown("---")
+            st.subheader("📊 Phân phối cảm xúc từ đánh giá")
 
+            sentiment_counts = df['Sentiment'].value_counts()
+
+            col1, col2 = st.columns(2)
+            with col1:
+                fig_bar, ax = plt.subplots()
+                sentiment_counts.plot(kind='bar', color=['green', 'gray', 'red'], ax=ax)
+                ax.set_title("Số lượng bình chọn theo cảm xúc")
+                ax.set_xlabel("Sentiment")
+                ax.set_ylabel("Số lượng")
+                ax.set_xticklabels(sentiment_counts.index, rotation=0)
+                st.pyplot(fig_bar)
+
+            with col2:
+                fig_pie, ax = plt.subplots()
+                sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['green', 'gray', 'red'], ax=ax)
+                ax.set_title("Tỷ lệ cảm xúc theo phần trăm")
+                ax.set_ylabel("")
+                st.pyplot(fig_pie)
     
         # Vector hóa văn bản
         vectorizer_cluster = CountVectorizer(max_features=1000)
