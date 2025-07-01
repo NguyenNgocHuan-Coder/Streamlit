@@ -301,9 +301,9 @@ elif menu_choice == "🧩 Information Clustering":
             sentiment_counts = df['Sentiment'].value_counts()
 
             color_map = {
-                'positive': 'limegreen',
-                'neutral': 'dodgerblue',
-                'negative': 'deeppink'
+                'positive': 'green',
+                'neutral': 'blue',
+                'negative': 'pink'
             }
             colors = [color_map.get(sent, 'gray') for sent in sentiment_counts.index]
 
