@@ -302,7 +302,7 @@ elif menu_choice == "🧩 Information Clustering":
             col1, col2 = st.columns(2)
             with col1:
                 fig_bar, ax = plt.subplots()
-                sentiment_counts.plot(kind='bar', color=['green', 'gray', 'red'], ax=ax)
+                sentiment_counts.plot(kind='bar', color=['gray','green', 'red'], ax=ax)
                 ax.set_title("Số lượng bình chọn theo cảm xúc")
                 ax.set_xlabel("Sentiment")
                 ax.set_ylabel("Số lượng")
@@ -311,7 +311,7 @@ elif menu_choice == "🧩 Information Clustering":
 
             with col2:
                 fig_pie, ax = plt.subplots()
-                sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['green', 'gray', 'red'], ax=ax)
+                sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['gray','green', 'red'], ax=ax)
                 ax.set_title("Tỷ lệ cảm xúc theo phần trăm")
                 ax.set_ylabel("")
                 st.pyplot(fig_pie)
