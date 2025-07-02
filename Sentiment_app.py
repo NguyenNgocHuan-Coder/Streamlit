@@ -63,8 +63,6 @@ positive_words = load_list_from_txt("positive_VN.txt")
 negative_words = load_list_from_txt("negative_VN.txt")
 positive_emojis = load_list_from_txt("positive_emoji.txt")
 negative_emojis = load_list_from_txt("negative_emoji.txt")
-correct_dict = load_list_from_txt("phrase_corrections.txt")
-english_dict = load_list_from_txt("english-vnmese.txt")
 # ========== Tiền xử lý ==========
 def covert_unicode(txt):
     return txt.encode('utf-8').decode('utf-8')
